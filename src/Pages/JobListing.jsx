@@ -49,32 +49,48 @@ const JobListing = () => {
 
       {loadingJobs === false && (
         <div>
-          {jobs?.length ? (
-            jobs.map((job) => (
-              <div key={job.id} className="lg:w-[60%] m-auto border p-4 mb-4 shadow-md hover:shadow-lg transition-all duration-300 bg-[rgba(0,123,255,0.04)] backdrop-blur rounded-lg">
-                <h2 className="text-2xl font-bold">{job.title}</h2>
-                <div className="flex flex-row items-center justify-between mb-2">
-                  <p className="text-gray-500">{job.company && <img src={job.company.logo_url} className='h-6 mt-2 mb-2' />}</p>
-                  <p className="text-gray-500 flex items-center justify-center gap-2"><MapPinIcon />{job.location}</p>
-                </div>
-                <hr className="py-2" />
-                <p className="text-gray-600 text-justify"><span className="text-white">Description: </span> {job.description}</p>
-                <div className="flex flex-row items-center justify-between mt-4">
-                  <div className="flex flex-row items-center justify-center border mt-4 bg-[rgba(0,123,255,0.04)] backdrop-blur rounded-lg p-2">
-                    <Link to={`/job/${job.id}`} className="text-blue-500 hover:text-blue-700 font-bold hover:cursor-pointer">View Job</Link>
-                  </div>
-                  <div>
-                    <HeartIcon className="hover:cursor-pointer hover:fill-red-700" stroke="red" />
-                  </div>
-                </div>
+        {jobs?.length ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {jobs.map((job) => (
+              <div key={job.id} className=" p-6 rounded-2xl shadow-md bg-[rgba(0,123,255,0.04)] backdrop-blur hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-blue-700">{job.title}</h2>
+                <HeartIcon className="hover:cursor-pointer hover:fill-red-500 transition-all duration-200" stroke="red" />
               </div>
-            ))
-          ) : (
-            <div>
-              No Jobs Found
+            
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  {job.company && job.company.logo_url && (
+                    <img src={job.company.logo_url} alt="logo" className="h-20 w-20 object-contain rounded-full" />
+                  )}
+                </div>
+                <p className="flex items-center gap-1 text-gray-600 text-sm">
+                  <MapPinIcon className="w-4 h-4" />
+                  {job.location}
+                </p>
+              </div>
+            
+              <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                <span className="font-semibold text-white">Description:</span> {job.description}
+              </p>
+            
+              <div className="flex justify-between items-center">
+                <Link
+                  to={`/job/${job.id}`}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 font-semibold text-sm"
+                >
+                  View Job
+                </Link>
+              </div>
             </div>
-          )}
-        </div>
+            
+            ))}
+          </div>
+        ) : (
+          <div>No Jobs Found</div>
+        )}
+      </div>
+      
       )}
 
     </div>

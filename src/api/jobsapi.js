@@ -35,3 +35,42 @@ export async function getJobs( token, {location, company_id, searchQuery }){
 
     return data;
 }
+
+export async function getSavedJobs( token, {alreadySaved}, saved){
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            },
+    });
+
+    if(alreadySaved){
+        const {data, error: deleteError} = await supabase
+        .from("saved_jobs")
+        .delete()
+        .eq("job_id", saveData.job_id)
+
+        if(deleteError){
+            console.error("Error deleting saved job:", deleteError);
+            return null;
+        }
+        return data;
+    } else{
+        const {data, error: insertError} = await supabase
+        .from("saved_jobs")
+        .insert([saveData])
+        .select()
+
+        if(insertError){
+            console.error("Error deleting saved job:", deleteError);
+            return null;
+        }
+        return data;
+    }
+
+
+    let query = supabase.from("jobs").select("*, company:companies(name, logo_url), saved: saved_jobs(id)")
+
+    return data;
+}

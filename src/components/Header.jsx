@@ -28,7 +28,7 @@ const Header = () => {
     }
     return (
         <>
-            <nav className='flex justify-between items-center px-10 py-3 border-b-2 border-gray-900'>
+            <nav className='flex justify-between items-center px-10 py-3 bg-[rgba(0,123,255,0.04)] backdrop-blur'>
                 <Link to="/" className='hover:scale-110 transition-all duration-200 cursor-pointer font-bold'>Hirenix</Link>
                 <div className='flex gap-4 items-center'>
                     <SignedOut>
