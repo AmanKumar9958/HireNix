@@ -1,22 +1,34 @@
-import React from 'react'
+import { getJobs } from "@/api/jobsapi";
+import useFetch from "@/hooks/useFetch";
+import { useSession } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 const JobListing = () => {
-  return (
-    <div className='flex flex-col items-center justify-center h-screen'>
-      <h1>Job Listing</h1>
-      <p>Here you can find job listings.</p>
-      <div className="job-listing">
-        <h2>Job Title 1</h2>
-        <p>Description of Job 1</p>
-        <button>Apply Now</button>
-      </div>
-      <div className="job-listing">
-        <h2>Job Title 2</h2>
-        <p>Description of Job 2</p>
-        <button>Apply Now</button>
-      </div>
-    </div>
-  )
-}
+  const { session } = useSession();
 
-export default JobListing
+  const {
+    fn: fnJobs,
+    data: dataJobs,
+    loading: loadingJobs,
+  } = useFetch(getJobs, {});
+
+  useEffect(() => {
+    if(session){
+      fnJobs();
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (dataJobs){
+      console.log("Jobs Data from Database: ", dataJobs);
+    }
+  }, [dataJobs]);
+
+  return (
+    <div>
+      <h1>Job Listing</h1>
+    </div>
+  );
+};
+
+export default JobListing;
