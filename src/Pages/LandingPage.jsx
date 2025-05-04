@@ -78,7 +78,7 @@ const LandingPage = () => {
                 </div>
                 {/* Left (Text) */}
                 <div className='flex flex-col items-center justify-center order-2 lg:order-1 px-3 lg:px-0'>
-                    <h1 className='text-2xl lg:text-4xl font-bold text-center'>Welcome to the JobHunt</h1>
+                    <h1 className='text-2xl lg:text-4xl font-bold text-center'>Welcome to the HireNix</h1>
                     <p className='mt-4 text-[1.09rem] lg:text-lg text-center'>Find your dream job or post a job for others.</p>
                     <div className='flex items-center justify-center mt-4 gap-4'>
                     <Link to={'/jobs'}>
