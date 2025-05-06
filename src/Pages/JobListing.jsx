@@ -1,4 +1,4 @@
-import { getJobs } from "@/api/jobsapi";
+import { getJobs, toggleSavedJobs, getSavedJobs } from "@/api/jobsapi";
 import useFetch from "@/hooks/useFetch";
 import { useSession } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ const JobListing = () => {
   const [location, setLocation] = useState("");
   const [company_id, setCompanyId] = useState("");
 
+  // for getting jobs..
   const {
     fn: fnJobs,
     data: jobs,
@@ -25,15 +26,47 @@ const JobListing = () => {
     company_id,
   });
 
+  // for getting saved jobs..
+  const [savedJobs, setSavedJobs] = useState([]);
+  const [loadingSavedJobs, setLoadingSavedJobs] = useState(false);
+
+  const fetchSavedJobs = async () => {
+    if (!session) return;
+  
+    const token = await session.getToken({ template: "supabase" }); // get actual JWT
+    const data = await getSavedJobs(token, session.user.id);
+    setSavedJobs(data);
+    setLoadingSavedJobs(false);
+  };
+
+
   useEffect(() => {
     if(isLoaded && session){
       fnJobs();
+      fetchSavedJobs();
     }
   }, [isLoaded, session, location, searchQuery, company_id]);
 
   if(!isLoaded){
     return <BarLoader className='mb-4' width={"100%"} color='blue' />
 }
+
+  // handling saved and unsaved jobs..
+  const handleSaveJobs = async (job_id) => {
+    if (!session) return;
+  
+    const token = await session.getToken({ template: "supabase" });
+    const isAlreadySaved = savedJobs?.some((job) => job.job_id === job_id);
+  
+    const savedData = {
+      user_id: session.user.id,
+      job_id: job_id,
+    };
+  
+    await toggleSavedJobs(token, { alreadySave: isAlreadySaved }, savedData);
+    fetchSavedJobs();
+  };
+  
 
   return (
     <div className="px-5">
@@ -55,7 +88,14 @@ const JobListing = () => {
               <div key={job.id} className=" p-6 rounded-2xl shadow-md bg-[rgba(0,123,255,0.04)] backdrop-blur hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-blue-700">{job.title}</h2>
-                <HeartIcon className="hover:cursor-pointer hover:fill-red-500 transition-all duration-200" stroke="red" />
+                <HeartIcon
+                  className={`hover:cursor-pointer transition-all duration-200 ${
+                    savedJobs?.some((saved) => saved.job_id === job.id)
+                      ? "fill-red-500 stroke-red-500"
+                      : "stroke-red-500"
+                  }`}
+                  onClick={() => handleSaveJobs(job.id)}
+                />
               </div>
             
               <div className="flex items-center justify-between mb-3">
@@ -92,7 +132,6 @@ const JobListing = () => {
       </div>
       
       )}
-
     </div>
   );
 };
