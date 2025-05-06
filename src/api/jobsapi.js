@@ -79,21 +79,21 @@ export async function toggleSavedJobs( token, {alreadySave}, savedData){
 export async function getSavedJobs(token, userId) {
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
         global: {
-            headers: {
+        headers: {
             Authorization: `Bearer ${token}`,
-            },
         },
-        });
-    
-        const { data, error } = await supabase
+        },
+    });
+
+    const { data, error } = await supabase
         .from("saved_jobs")
         .select("job_id")
         .eq("user_id", userId);
-    
-        if (error) {
+
+    if (error) {
         console.error("Error fetching saved jobs:", error);
         return [];
-        }
-    
-        return data;
+    }
+
+    return data;
 }
